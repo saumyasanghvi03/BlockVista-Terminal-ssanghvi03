@@ -4,7 +4,7 @@ import pandas as pd
 from kiteconnect import KiteConnect
 import plotly.express as px
 from datetime import datetime, timedelta
-import pandas_ta as ta  # For technical indicators
+import numpy as np
 import os
 
 # Load secrets from Streamlit Cloud
@@ -79,15 +79,20 @@ def symbol_to_token(kite, symbol, exchange="NSE"):
     except:
         return None
 
-# Technical indicators using pandas_ta
+# Technical indicators using numpy
 def calculate_sma(data, period=20):
-    return ta.sma(data, length=period)
+    return pd.Series(data).rolling(window=period).mean()
 
 def calculate_ema(data, period=20):
-    return ta.ema(data, length=period)
+    return pd.Series(data).ewm(span=period, adjust=False).mean()
 
 def calculate_rsi(data, period=14):
-    return ta.rsi(data, length=period)
+    delta = pd.Series(data).diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
+    rs = gain / loss
+    rs = rs.replace([np.inf, -np.inf], np.nan).fillna(0)
+    return 100 - (100 / (1 + rs))
 
 # Initialize KiteConnect
 @st.cache_resource
