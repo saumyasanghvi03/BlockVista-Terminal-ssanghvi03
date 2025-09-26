@@ -4,18 +4,26 @@ import pandas as pd
 from kiteconnect import KiteConnect
 import plotly.express as px
 from datetime import datetime, timedelta
-import numpy as np
-import talib  # For technical indicators
+import pandas_ta as ta  # For technical indicators
 import os
 
-# Placeholder for config - In production, use secrets
+# Load secrets for Streamlit Cloud or fallback to config.py
 API_KEY = st.secrets.get("API_KEY", "your_api_key")
 ACCESS_TOKEN = st.secrets.get("ACCESS_TOKEN", "your_access_token")
 
-# Load sectors.csv if exists
+# Load sectors.csv
 sectors_df = None
 if os.path.exists("sectors.csv"):
     sectors_df = pd.read_csv("sectors.csv")
+
+# PWA meta tags
+st.markdown("""
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="BlockVista">
+<link rel="apple-touch-icon" href="https://img.icons8.com/color/180/000000/india.png">
+""", unsafe_allow_html=True)
 
 # Custom CSS
 css = """
@@ -66,15 +74,15 @@ def symbol_to_token(kite, symbol, exchange="NSE"):
     except:
         return None
 
-# Technical indicators
+# Technical indicators using pandas_ta
 def calculate_sma(data, period=20):
-    return talib.SMA(data, timeperiod=period)
+    return ta.sma(data, length=period)
 
 def calculate_ema(data, period=20):
-    return talib.EMA(data, timeperiod=period)
+    return ta.ema(data, length=period)
 
 def calculate_rsi(data, period=14):
-    return talib.RSI(data, timeperiod=period)
+    return ta.rsi(data, length=period)
 
 # Initialize KiteConnect
 @st.cache_resource
@@ -191,7 +199,7 @@ elif page == "Historical Data":
                     fig = px.line(df, x='date', y='close', title=f"{symbol} Historical Price", height=600)
                     fig.update_layout(xaxis_title="Date", yaxis_title="Price", hovermode="x unified")
                     
-                    close = df['close'].values
+                    close = df['close']
                     for period in periods:
                         if "SMA" in period:
                             sma = calculate_sma(close)
@@ -334,7 +342,7 @@ elif page == "Options Analytics":
         if not options.empty:
             st.dataframe(options[['tradingsymbol', 'strike', 'instrument_type', 'expiry']], use_container_width=True)
             
-            # Placeholder for Greeks (Delta, Gamma, etc.) - Implement with formulas or library
+            # Placeholder for Greeks (Delta, Gamma, etc.)
             st.subheader("Greeks & IV (Placeholder)")
             st.info("Advanced Greeks calculations: Delta, Gamma, Theta, Vega, Rho. Coming soon!")
             
