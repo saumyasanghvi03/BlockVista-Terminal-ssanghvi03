@@ -1,7 +1,11 @@
 # requirements.txt
+# Compatible with Python 3.13.7 and standard pip installation
+# Removed pandas_ta to avoid dependency conflicts
+# Uses kiteconnect==5.0.1 (latest stable version)
+# Adjusted pandas to a version compatible with Python 3.13.7
+
 streamlit==1.28.1
 kiteconnect==5.0.1
-pandas==2.0.3
+pandas==2.2.3
 plotly==5.15.0
-numpy==1.25.2
-pandas_ta==0.4.71b0
+numpy==1.26.4
