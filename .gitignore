@@ -1,0 +1,15 @@
+# .gitignore
+
+# Config files with secrets
+config.py
+.streamlit/secrets.toml
+.env
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyc
+
+# Misc
+.DS_Store
+*.log
