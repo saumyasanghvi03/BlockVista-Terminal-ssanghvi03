@@ -1,6 +1,4 @@
-# BlockVista-Terminal-ssanghvi03
-# README.md
-# 🚀 BlockVista Terminal™
+# BlockVista-TerminalTM ssanghvi03
 
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
