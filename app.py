@@ -7,9 +7,14 @@ from datetime import datetime, timedelta
 import pandas_ta as ta  # For technical indicators
 import os
 
-# Load secrets for Streamlit Cloud or fallback to config.py
-API_KEY = st.secrets.get("API_KEY", "your_api_key")
-ACCESS_TOKEN = st.secrets.get("ACCESS_TOKEN", "your_access_token")
+# Load secrets from Streamlit Cloud
+API_KEY = st.secrets.get("API_KEY")
+ACCESS_TOKEN = st.secrets.get("ACCESS_TOKEN")
+
+# Validate secrets
+if not API_KEY or not ACCESS_TOKEN:
+    st.error("API_KEY or ACCESS_TOKEN not found in Streamlit secrets. Please configure in Streamlit Cloud settings.")
+    st.stop()
 
 # Load sectors.csv
 sectors_df = None
@@ -342,7 +347,7 @@ elif page == "Options Analytics":
         if not options.empty:
             st.dataframe(options[['tradingsymbol', 'strike', 'instrument_type', 'expiry']], use_container_width=True)
             
-            # Placeholder for Greeks (Delta, Gamma, etc.)
+            # Placeholder for Greeks
             st.subheader("Greeks & IV (Placeholder)")
             st.info("Advanced Greeks calculations: Delta, Gamma, Theta, Vega, Rho. Coming soon!")
             
